@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
         // Child process --> Orphan process
         printf("Orphan process ID: %d\n", getpid());
         sleep(15); // Sleep for 15 seconds to allow the parent process to terminate
-        printf("Orphan process ID: %d\n Exiting", getpid());
+        printf("Orphan process ID: %d\n Exiting\n", getpid());
         exit(0);
 
     }else

@@ -2,11 +2,11 @@
 
 all: ex1
 
-ex1: ex1
+ex1: ex1.c
 	gcc -o ex1 ex1.c
 
 run: ex1
-	./ex1.exe
+	./ex1
 
-clean: 
-	del -rf ex1.exe
+clean:
+	rm -rf ex1

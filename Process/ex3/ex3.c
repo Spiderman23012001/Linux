@@ -2,50 +2,77 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
-#include<signal.h>
+#include <pthread.h>
+#define MAX_RD 10
 
-void signal_handler(int signal)
+int ready = 0;
+int ramdom_number = 0;
+
+pthread_t producer_thread, consumer_thread;
+
+pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
+
+pthread_cond_t consumer_cond = PTHREAD_COND_INITIALIZER;
+pthread_cond_t producer_cond = PTHREAD_COND_INITIALIZER;
+
+
+static void *producer_handler(void *args)
 {
-    if(signal == SIGUSR1)
+    for(int i = 0; i < MAX_RD; i++)
     {
-        printf("Child process ID: %d received SIGUSR1 signal!\n",getpid());
+        pthread_mutex_lock(&lock1);
+
+        // wait signal from consumer
+        while(ready == 1)
+        {
+            pthread_cond_wait(&producer_cond, &lock1);
+        }
+
+        ramdom_number = rand() % 100 + 1;
+        printf("Produce generate: %d\n", ramdom_number);
+        ready = 1;
+
+        // send signal to consumer
+        pthread_cond_signal(&consumer_cond);
+    
+        pthread_mutex_unlock(&lock1);
     }
+
+    pthread_exit(NULL);
+
+
+}
+
+static void *consumer_handler(void *args)
+{
+    for(int i = 0; i < MAX_RD; i++)
+    {
+        pthread_mutex_lock(&lock1);
+        // wait signal from produce
+        while(ready==0)
+        {
+            pthread_cond_wait(&consumer_cond, &lock1);
+        }
+
+        printf("Consumer received: %d\n",ramdom_number);
+        ready = 0;
+        // send signal to produce
+        pthread_cond_signal(&producer_cond);
+
+        pthread_mutex_unlock(&lock1);
+    }
+
+    pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[])
 {
-    pid_t pid = fork();
-    int status;
+    srand(time(NULL));
+    pthread_create(&producer_thread, NULL, producer_handler, NULL);
+    pthread_create(&consumer_thread, NULL, consumer_handler, NULL);
 
-    if(pid < 0)
-    {
-        perror("Fork failed");
-        exit(EXIT_FAILURE);
-    }else if(pid == 0)
-    {
-        // child process
-        printf("child process ID waiting for signal ...\n");
-        signal(SIGUSR1, signal_handler); // Register signal handler
-        pause(); // Wait for signal
-        printf("Child process ID: %d exiting...\n", getpid());
-
-    }else
-    {
-        // parrent process
-        printf("Parent process ID: %d, Child process ID: %d\n", getpid(), pid);
-        sleep(2); // Sleep for 2 seconds
-        printf("Parent process sending SIGUSR1 signal to child process ID: %d\n", pid);
-        kill(pid, SIGUSR1); // Send signal to child process
-        waitpid(pid,&status,0); // Wait for child process to finish
-        if(WIFEXITED(status))
-        {
-            printf("Child process exited with status: %d\n",WIFEXITED(status));
-        }else
-        {
-            printf("Child process terminated abnormally\n");
-        }
-    }
+    pthread_join(producer_thread, NULL);
+    pthread_join(consumer_thread, NULL);
 
     return 0;
 }
