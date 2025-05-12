@@ -1,7 +1,7 @@
 # Linux File System
 
 ## 1. File Management
-- Dup() and dup2()
+- dup() and dup2()
 - File Descriptor table 
 - Open file table
 - I-node 
