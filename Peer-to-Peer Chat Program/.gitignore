@@ -2,3 +2,5 @@ src/connection.o
 src/main.o
 src/message.o
 src/network.o
+chat
+chat.c
