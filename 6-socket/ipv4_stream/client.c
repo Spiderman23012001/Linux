@@ -10,16 +10,23 @@
 #define handle_error(msg) \
     do{ perror(msg); exit(EXIT_FAILURE); }while(0);
 
+
+/**
+ * @brief   Chat function using TCP socket
+ * @note    None
+ * @param   socket_fd: socket file descriptor
+ * @retval  None
+ */
 void chat_func(int socket_fd)
 {
     int numb_read, numb_write;
     char recevbuff[BUFF_SIZE];
     char sendbuff[BUFF_SIZE];
 
-    // ghi 
+    /* Write */  
     while(1)
     {
-        // memset
+        /* Memset*/ 
         memset(&recevbuff,'0', BUFF_SIZE);
         memset(&sendbuff, '0', BUFF_SIZE);
         // ghi
@@ -48,7 +55,7 @@ void chat_func(int socket_fd)
         printf("Message from Server: %s",recevbuff);
     }
 
-    // read
+
 }
 
 int main(int argc, char * argv[])
