@@ -13,6 +13,7 @@
 #include <netdb.h>
 #include "network.h"
 
+
 int get_my_ip(char *ip_str, size_t max_len) {
     struct ifaddrs *ifaddr, *ifa;
     int family, s;
