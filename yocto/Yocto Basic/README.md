@@ -69,5 +69,30 @@
 
 
 ## 5. UART 
+- PL2303
+    - red - 5V
+    - black - GND
+    - green - TX
+    - white - RX
+- Raspberry pi 3b+
+    - GPIO 14 - TX
+    - GPIO 15 - RX
+    - GND - 
+- Connect the wire:
+    - white <-> GPIO 14 (Pi)
+    - green <-> GPIO 15 (Pi)
+    - black <-> GND (Pi)
+- Host
+    - `sudo apt update`
+    - `sudo apt install minicom`
+    - `sudo minicom -s`
+        - Set `Data Bits: 8` `Parity: None` `Stop Bits: 1`
+    - Check ttyUSB0 (`ls /dev/tty*`)
+    - `sudo minicom` to start
+- Edit `/boot/cmdline.txt` and `/boot/config.txt`
+    - `sudo nano /boot/config.txt` -> `enable_uart=1`
+    - `sudo nano /boot/cmdline.txt` -> ...
+- Edit device tree overlays
+
 
 
