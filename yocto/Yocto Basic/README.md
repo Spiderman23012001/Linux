@@ -58,9 +58,16 @@
             - `conf/local.conf`: 
             - Add `BB_NO_NETWORK = "0"`
             - Add `CONNECTIVITY_CHECK_URIS = "https://www.yoctoproject.org/connectivity.html"`
+            - `sudo nano /etc/resolv.conf`
+            - Add `nameserver 8.8.8.8`
+            - Add `nameserver 8.8.4.4`
+            - Add `nameserver 1.1.1.1`
+            - Add `nameserver 1.0.0.1`
+
+
+
+
 
 ## 5. UART 
-- Add raspberrypi class:
-    - Search meta-.. in `https://layers.openembedded.org/layerindex/branch/master/layers/`
-    - `git clone git://git.yoctoproject.org/meta-raspberrypi -b scarthgap`
-    
+
+
