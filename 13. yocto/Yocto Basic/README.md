@@ -50,9 +50,13 @@
 ## 4. Example in docker
 - Dropbear
     - Install
-        - sudo apt install bzip2 bunzip2 chrpath diffstat lz4
-        - bitbake dropbear
+        - `sudo apt install bzip2 bunzip2 chrpath diffstat lz4`
+        - `bitbake dropbear`
     - Error:
+        - Error: `cmake-native`
+        - Solution:
+            - `bitbake -c fetchall cmake-native` 
+            - `bitbake -c cleansstate cmake-native`
         - `ERROR: quilt-native-0.67-r0 do_fetch: Bitbake Fetcher Error: NetworkAccess('https://download.savannah.gnu.org/releases/quilt/quilt-0.67.tar.gz', "/usr/bin/env wget -t 2 -T 100 -O /home/user/Android/Sdk/yocto/poky/build/downloads/quilt-0.67.tar.gz.tmp -P `
         - Solution
             - `conf/local.conf`: 
@@ -64,11 +68,16 @@
             - Add `nameserver 1.1.1.1`
             - Add `nameserver 1.0.0.1`
 
+## 5. Add package
+- Delete and build 
+    - `bitbake -c cleansstate dropbear`
+- Add dropbear
+    - `find . -name "*dropbear"`
 
 
 
 
-## 5. UART 
+## 6. UART 
 - PL2303
     - red - 5V
     - black - GND
@@ -89,10 +98,45 @@
         - Set `Data Bits: 8` `Parity: None` `Stop Bits: 1`
     - Check ttyUSB0 (`ls /dev/tty*`)
     - `sudo minicom` to start
-- Edit `/boot/cmdline.txt` and `/boot/config.txt`
-    - `sudo nano /boot/config.txt` -> `enable_uart=1`
-    - `sudo nano /boot/cmdline.txt` -> ...
-- Edit device tree overlays
 
+- Enable UART
+    - Method 1: 
+        - `SERIAL_CONSOLES = "115200;ttyS0"`
+        - `CMDLINE_SERIAL ?= "console=serial0,115200"`
+        - `ENABLE_UART = "1"`
+        -> Add to `poky/build/conf/local.conf` or `meta-custom/conf/local.conf`
+    - Method 2:
+        - Edit `/boot/cmdline.txt` and `/boot/config.txt`
+        - `sudo nano /boot/config.txt` -> `enable_uart=1`
+        - `sudo nano /boot/cmdline.txt` -> ...
+- Edit device tree overlays
+    - check `machine/include/rapi-base.inc`
+    - Add (4 spaces)
+    ```bash
+    RPI_KERNEL_DEVICETREE_OVERLAYS:append = " \
+        overlays/uart0.dtbo \
+    " 
+    ```
+    - Create `meta-custom/recipes-bsp/bootfiles/rpi-config_git.bbappend`:
+    ```bash
+    do_deploy{
+        echo "dtoverlay=uart0" >> $CONFIG
+    }
+    ```
+
+## 7. Flash SD card
+- Boot Sequence
+    - ![Boot Sequece](./img/boot_squence.png)
+- Download: [Balena Etcher](https://github.com/balena-io/etcher/releases/download/v2.1.2/balenaEtcher-linux-x64-2.1.2.zip)
+- Run: 
+    ```bash  
+        chmod +x ...AppImage
+        ./...AppImage
+    ```
+
+    - Select `build/tmp/deploy/images/raspberrypi3bplus/...wic.bz2`
+    - Log console with uart:
+        - `sudo minicom -S`
+        - Ctrl + V
 
 

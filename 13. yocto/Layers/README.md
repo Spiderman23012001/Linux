@@ -3,20 +3,20 @@
 - ![image](./img/architecture.png)
 - ![image](./img/big_picture.png)
 
-- Add raspberrypi layer:
+## 1. Add raspberrypi layer:
     - Search meta-.. in `https://layers.openembedded.org/layerindex/branch/master/layers/`
     - `git clone git://git.yoctoproject.org/meta-raspberrypi -b scarthgap`
     - check LAYERDEPENDS
     - find depence layers and install it and add it to `bblayer.conf`
     - Change MACHINE in `/conf/local.conf` into `MACHINE = raspberrypi3-64`
 
-- layer:
+## 2. layer:
     - Append to recipes(.bbappend): override variable, function,...
     - Class (.bbclass):
     - recipe (.bb): method fetch, patch, comiple, configuration,...
     - machine (.conf): config machine 
     - Distro (.conf): config distro
-- Create Our Own Layers
+## 3. Create Our Own Layers
     - Copy one layer and rename (meta-custom)
     - Delete all folder in meta-custom except `conf/layer.conf`
     - Inside `meta-custom`
@@ -52,4 +52,8 @@
         multimedia-layer:${LAYERDIR}/dynamic-layers/multimedia-layer/*/*/*.bbappend \
     "
 ```
+- Add package to layer
+    - Ex: Add `IMAGE_FEATURES:append = " dropbear "` to `meta-custom/conf/local.conf`
+    - Check installed list: `code pn-buildlist`
+
     
