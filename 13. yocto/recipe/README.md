@@ -1,26 +1,27 @@
 # Recipe
 ## 1. Introduction
 - Example Recipes
-    - Create `meta-custom/recipes-devtools/helloworldc/helloworldc_1.0.0.bb`:
+    - Create `meta-custom/recipes-devtools/helloworldc_1.0.0.bb`:
     ```bash
-    SUMMARY = "$(PN) file recipe"
+    SUMMARY = "Simple Hello World app"
     LICENSE = "CLOSED"
 
-    SRC_URI = "file://mysource"
-    S = "$(WORKDIR)/mysource"
+    SRC_URI = "file://helloyp.c"
+    S = "${WORKDIR}"
 
-    TARGET_CC_ARCH += "LDFLAGS"
+    do_configure[noexec] = "1"  
 
-    do_compile(){
-        $(CC) $(S)/helloyp.c -o $(B)/helloyp
+    do_compile() {
+        ${CC} ${CFLAGS} ${LDFLAGS} ${S}/helloyp.c -o helloyp
     }
 
-    do_install(){
-        install -d $(D)/$(bindir)
-        install -m 0755 $(B)/helloyp $(D)$(bindir)
+    do_install() {
+        install -d ${D}${bindir}
+        install -m 0755 ${B}/helloyp ${D}${bindir}
     }
+
     ```
-    - Create `meta-custom/recipes-devtools/helloworldc/files/mysource/helloyp.c`:
+    - Create `meta-custom/recipes-devtools/helloworldc/files/helloyp.c`:
     ```c
     #include <stdio.h>
 
@@ -46,11 +47,11 @@
     LICENSE = "CLOSED"
     SRC_URI = "git://github.com/mozcelikors/makefile-example.git;protocol=https"
     SRCREV = "5fc593af10244751039f2a1163134b6b60a7df37"
-    SRCREV = $(AUTOREV)
-    RDEPENDS:$(PN):append = " bash "
+    SRCREV = ${AUTOREV}
+    RDEPENDS:${PN}:append = " bash "
     DEPENDS:append = " "
 
-    S = "$(WORKDIR)/git"
+    S = "${WORKDIR}/git"
 
     do_compile(){
         export OECORE_TARGET_SYSROOT=$(STAGING_DIR_TARGET)
@@ -58,37 +59,37 @@
     }
 
     do_install(){
-        install -d $(D)$(bindir)
-        install -m 0755 $(S)/app $(D)/$(bindir)/app
-        install -m 0755 $(S)/app $(D)/$(bindir)/app2
+        install -d ${D}${bindir}
+        install -m 0755 ${S}/app ${D}/${bindir}/app
+        install -m 0755 ${S}/app ${D}/${bindir}/app2
     }
 
-    PACKAGES = "$(PN) \
-                $(PN)-app \
-                $(PN)-app2 \
-                $(PN)-dbg \
+    PACKAGES = "${PN} \
+                ${PN}-app \
+                ${PN}-app2 \
+                ${PN}-dbg \
     "
 
-    FILE:$(PN):append = " $(bindir)/app "
-    FILE:$(PN)-app:append = " $(bindir)/app "
-    FILE:$(PN)-app2:append = " $(bindir)/app2 "
-    FILE:$(PN)-dbg:append = " $(bindir)/.debug $(bindir)/.debug/app $(bindir)/.debug/app2 "
+    FILE:${PN}:append = " ${bindir}/app "
+    FILE:${PN}-app:append = " ${bindir}/app "
+    FILE:${PN}-app2:append = " ${bindir}/app2 "
+    FILE:${PN}-dbg:append = " ${bindir}/.debug ${bindir}/.debug/app ${bindir}/.debug/app2 "
     ```
 ## 3. Creating a recipe for software package that uses CMake
 - Create `meta-custom/recipes-devtools/raspberrypi-utils/raspberrypi-utils_1.0.0.bb`:
     ```bash
-    FILESEXTRAPATHS:prepend := "$(THISDIR)/file2"
+    FILESEXTRAPATHS_prepend := "${THISDIR}/file2:"
 
 
     SUMMARY = "Recipe file for few raspberry pi tools"
     LICENSE = "CLOSED"
 
-    RDEPENDS:$(PN):append = " bash "
+    RDEPENDS:${PN}:append = " bash "
     SRC_URI = "git://github.com/raspberrypi/utils.git;protocol=https;branch=master"
     SRC_URI += "file://git/CMakeLists.txt "
     SRCREV = "b7651d86d71a172b2208c67b2e360cbcb4f9d98f"
 
-    S = "$(WORKDIR)/git"
+    S = "${WORKDIR}/git"
 
     inherit cmake pkgconfig
 
@@ -98,7 +99,7 @@
         install -m 0755 ${S}/raspinfo/raspinfo ${D}${bindir}
     }
 
-    FILES:$(PN) += " /usr/share/bash-completion/completions/pinctrl"
+    FILES:${PN} += " /usr/share/bash-completion/completions/pinctrl"
     FILES:${PN} += " ${bindir}/pinctrl"
     FILES:${PN} += " ${bindir}/raspinfo"
     ```
