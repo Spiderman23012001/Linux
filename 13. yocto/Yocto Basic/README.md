@@ -123,6 +123,7 @@
         echo "dtoverlay=uart0" >> $CONFIG
     }
     ```
+    (Reference https://github.com/raspberrypi/linux/blob/rpi-6.12.y/arch/arm/boot/dts/overlays/uart0-overlay.dts)
 
 ## 7. Flash SD card
 - Boot Sequence
@@ -138,5 +139,24 @@
     - Log console with uart:
         - `sudo minicom -S`
         - Ctrl + V
+## 8. Swap 
+### Linux
+```bash
+# Tạo file swap 4GB
+sudo fallocate -l 4G /swapfile
 
+# Đặt quyền an toàn
+sudo chmod 600 /swapfile
 
+# Định dạng file thành swap
+sudo mkswap /swapfile
+
+# Bật swap
+sudo swapon /swapfile
+
+# Kiểm tra
+free -h
+```
+### Windows
+- View advanced system settings -> Performace (setting) -> Advance -> Virtual memory 
+- Untick (Automatically manage...) -> Select Custom size -> Initial size: 4096, Maximum size: 8192 -> Set
