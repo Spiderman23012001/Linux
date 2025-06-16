@@ -104,14 +104,14 @@
         - `SERIAL_CONSOLES = "115200;ttyS0"`
         - `CMDLINE_SERIAL ?= "console=serial0,115200"`
         - `ENABLE_UART = "1"`
-        -> Add to `poky/build/conf/local.conf` or `meta-custom/conf/local.conf`
+        -> Add to `poky/build/conf/layer.conf` or `meta-custom/conf/layer.conf`
     - Method 2:
         - Edit `/boot/cmdline.txt` and `/boot/config.txt`
         - `sudo nano /boot/config.txt` -> `enable_uart=1`
         - `sudo nano /boot/cmdline.txt` -> ...
 - Edit device tree overlays
     - check `machine/include/rapi-base.inc`
-    - Add (4 spaces)
+    - Add (4 spaces) to `local.conf`
     ```bash
     RPI_KERNEL_DEVICETREE_OVERLAYS:append = " \
         overlays/uart0.dtbo \
