@@ -6,7 +6,7 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 
-#define DRIVER_AUTHOR "phonglt9 linuxfromscratch@gmail.com"
+#define DRIVER_AUTHOR "Tran Duc Tin"
 #define DRIVER_DESC   "Character device điều khiển GPIO26"
 #define DRIVER_VERS   "1.0"
 
