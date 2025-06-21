@@ -114,7 +114,7 @@
     cp workspace/sources/linux-raspberrypi/0001-Add-mgpio-module-for-controlling-LED-on-GPIO27.patch ../meta-custom/recipes-kernel/linux/linux-raspberrypi/
     ```
 - Step 6: Create bbappend file for kernel
-    - **Method 1**
+    - **Method 1** (Recommend)
         - `cd /meta-custom/recipes-kernel/linux/linux-raspberrypi_%.bbappend`
         - 
         ```c
@@ -134,6 +134,8 @@
         - `cd /build/workspace/sources/linux-raspberrypi/arch/arm/configs`
         - Select bcm2709_defconfig for raspberry pi3B+
         - Add `CONFIG_MGPIO=m` (build module) or `CONFIG_MGPIO=y` (build-in)
+    - **Method 3**
+        - run `bitbake virtual/kernel -c menuconfig` -> Device Driver -> select * (build-in) or M (Module) or [] for not use
 - Step 7:
     - run `bitbake virtual/kernel`
 ## 4.1 Build module 
