@@ -124,7 +124,7 @@
                 file://mgpio.cfg \
         "
 
-        KERNEL_MODULE_AUTOLOAD += "mgpio"
+        KERNEL_MODULE_AUTOLOAD += " mgpio"
         ```
         - mgpio.cfg
         ```bash
