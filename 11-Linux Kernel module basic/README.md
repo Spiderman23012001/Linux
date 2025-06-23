@@ -55,6 +55,8 @@
 
 ### 3.2 Integer-base
 
+### 3.3 Sysfs
+
 ### 3.3 Device tree
 
 ## 4. Build 
@@ -77,7 +79,7 @@
     menu "mgpio device driver"
 
     config MGPIO
-        bool "mgpio device driver"
+        tristate "mgpio device driver"
         depends on ARM
         default y if ARM
         help
