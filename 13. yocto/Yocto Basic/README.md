@@ -1,4 +1,5 @@
 ## 1. Architecture
+![image](./img/Rasperrypi.png)
 ![image](./img/architecture.png)
 - Source mirror
     - Upstream
