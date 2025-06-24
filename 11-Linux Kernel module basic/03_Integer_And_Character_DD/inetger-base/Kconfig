@@ -1,0 +1,11 @@
+menu "mgpio device driver"
+
+config MGPIO
+    tristate "mgpio device driver"
+    depends on ARM
+    default y
+    help
+        Select this option to build the mgpio module.
+        If compiled as a module, it will be named mgpio.ko
+
+endmenu
