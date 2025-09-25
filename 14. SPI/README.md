@@ -406,5 +406,83 @@ st7735ClearDisplay(module);
 st7735DisplayImage(module, image01Tbl, ST7735_MAX_SEG, ST7735_MAX_ROW);
 ```
 
+## 3.5 Helper Functions
+- **Set window**
+```c
+static void st7735SetWindow(st7735_spi_module_t *module, uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+{
+    st7735Write(module, true, 0x2A); // Column address set
+    st7735Write(module, false, 0);
+    st7735Write(module, false, x);
+    st7735Write(module, false, 0);
+    if (x + width > ST7735_MAX_SEG) {
+        st7735Write(module, false, ST7735_MAX_SEG); // Set end column address to max segment
+    } else {
+        st7735Write(module, false, x + width); // Set end column address
+    }
+
+    st7735Write(module, true, 0x2B); // Row address set
+    st7735Write(module, false, 0);
+    st7735Write(module, false, y);
+    st7735Write(module, false, 0);
+    if (y + height > ST7735_MAX_ROW) {
+        st7735Write(module, false, ST7735_MAX_ROW); // Set end row address to max row
+    } else {
+        st7735Write(module, false, y + height); // Set end row address
+    }
+
+    st7735Write(module, true, 0x2C); // Memory write
+}
+```
+- **Clear Display**
+```c
+static void st7735ClearDisplay(st7735_spi_module_t *module)
+{
+    int i;
+
+    st7735SetWindow(module, 0, 0, ST7735_MAX_SEG, ST7735_MAX_ROW);
+    for (i = 0; i < ST7735_MAX_ROW * ST7735_MAX_SEG; i++) {
+        st7735Write(module, false, 0x00); // Clear display by writing zeros
+        st7735Write(module, false, 0x00); // Clear display by writing zeros
+    }
+}
+```
+- **Set Cursor**
+```c
+static void st7735SetCursor(st7735_spi_module_t *module, uint8_t line, uint8_t cursor)
+{
+    if (line > ST7735_MAX_LINE || cursor >= ST7735_MAX_SEG) {
+        pr_err("DevLinux: [%s %d] Invalid line or cursor position\n", __func__, __LINE__);
+        return;
+    }
+
+    module->currentLine = line;
+    module->currentCursor = cursor;
+
+    /* Set the column address */
+    st7735Write(module, true, 0x21); // column start and end address command
+    st7735Write(module, true, cursor); // Set start column address
+    st7735Write(module, true, ST7735_MAX_SEG - 1); // Set end column address
+
+    /* Set the page address */
+    st7735Write(module, true, 0x22); // page start and end address command
+    st7735Write(module, true, line); // Set start page
+    st7735Write(module, true, ST7735_MAX_LINE); // Set end
+}
+```
+- **Display Image**
+```c
+static void st7735DisplayImage(st7735_spi_module_t *module, const uint8_t *image, uint8_t width, uint8_t height)
+{
+    uint16_t i;
+
+    st7735SetWindow(module, 0, 0, width, height);
+    for (i = 0; i < width * height * 2; i++) {
+        st7735Write(module, false, image[i]);
+    }
+}
+```
+
+## 3.6 Character Device Interface
 
 

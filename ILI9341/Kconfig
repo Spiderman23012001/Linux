@@ -1,0 +1,10 @@
+menu "DevLinux: ST7735 Spi Device Driver"
+
+config M7735
+        tristate
+        prompt "DevLinux: ST7735 SPI Device Driver"
+        depends on ARM || ARM64
+        default m if ARM || ARM64
+        help
+           Select this option to run m7735 module.
+endmenu

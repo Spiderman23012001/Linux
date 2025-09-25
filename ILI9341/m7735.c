@@ -242,6 +242,7 @@ static void st7735InitDisplay(st7735_spi_module_t *module)
 static void st7735ClearDisplay(st7735_spi_module_t *module)
 {
     int i;
+
     st7735SetWindow(module, 0, 0, ST7735_MAX_SEG, ST7735_MAX_ROW);
     for (i = 0; i < ST7735_MAX_ROW * ST7735_MAX_SEG; i++) {
         st7735Write(module, false, 0x00); // Clear display by writing zeros
@@ -253,6 +254,7 @@ static void st7735ClearDisplay(st7735_spi_module_t *module)
 static void st7735DisplayImage(st7735_spi_module_t *module, const uint8_t *image, uint8_t width, uint8_t height)
 {
     uint16_t i;
+
     st7735SetWindow(module, 0, 0, width, height);
     for (i = 0; i < width * height * 2; i++) {
         st7735Write(module, false, image[i]);
@@ -467,6 +469,8 @@ static int st7735Probe(struct spi_device *client)
     } else {
         pr_info("DevLinux: [%s %d] DC pin is active high\n", __func__, __LINE__);
     }
+
+    // pr_info("DevLinux: [%s %d] Reset Pin: %d, DC Pin: %d\n", __func__, __LINE__, module->resetPin, module->dcPin);
     
     /* Configure SPI device */
     client->mode = SPI_MODE_0; // Set SPI mode
@@ -493,6 +497,16 @@ static int st7735Probe(struct spi_device *client)
 
     /* Initialize display */
     st7735InitDisplay(module);
+    // st7735SetCursor(module, 0, 0);
+    // st7735DisplayString(module, "DevLinux\nHello World!\n");
+
+    /* Reset the display */
+    // gpiod_set_value(module->resetPin, GPIOD_OUT_LOW);
+    // gpiod_set_value(module->dcPin, GPIOD_OUT_LOW);
+    // udelay(5000);
+    // gpiod_set_value(module->resetPin, GPIOD_OUT_HIGH);
+    // gpiod_set_value(module->dcPin, GPIOD_OUT_HIGH);
+    // udelay(5000);
 
     /* Save module */
     st7735Module = module;
@@ -544,3 +558,9 @@ MODULE_LICENSE(DRIVER_LICENSE);
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_VERSION(DRIVER_VERSION);
+
+
+
+
+
+

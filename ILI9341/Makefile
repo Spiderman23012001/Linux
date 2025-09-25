@@ -1,0 +1,2 @@
+EXTRA_CFLAGS = -Wall
+obj-$(CONFIG_ILI9341) = ili93411.o
